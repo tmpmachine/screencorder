@@ -19,22 +19,20 @@
     [
       <!-- # action buttons -->
       [ .d-flex .gap-half .flex-wrap
-        [btn data-onclick="start-capture" 'Capture']
-        [btn onclick="app.ToggleRecordAuto()" 'Start Capture']
-        [btn onclick="stopRecording()" 'Stop Capture']
-        [btn onclick="app.ResumeRecording()" 'Resume Capture']
-        [btn onclick="app.PauseRecording()" 'Pause Capture']
-        [btn onclick="preview()" 'Preview']
-        [btn onclick="download()" 'Download']
-        [btn onclick="setEndTime()" 'Set End Time']
-      ]
-      [ .pb-half]
-      <!--# cache control-->
-      [ .d-flex .gap-half .flex-wrap
+        [btn data-onclick="start-capture" 'Start Capture']
+        [btn onclick="app.ToggleRecordAuto()" 'Record']
+        [btn onclick="stopRecording()" 'Stop']
+        [btn onclick="app.PauseRecording()" 'Pause']
+        [btn onclick="app.ResumeRecording()" 'Resume']
+        [btn onclick="preview()" 'Preview' .obsoletes]
+        [btn onclick="download()" 'Download' .obsoletes]
+        [btn onclick="setEndTime()" 'Set End Time' .obsoletes]
+        |
+        <!--# cache control-->
         [btn 'Check updates' onclick="window.pwa.update()"]
         [btn 'Remove updates' onclick="window.pwa.removeUpdate()"]
       ]
-      [ .pb-half]
+      [ .void .void-half]
       
       <!-- # audio controls -->
       [
@@ -56,17 +54,6 @@
       ]
     ]
   ]
-  
-  
-
-  <style>
-    video {
-      width: 854px;
-      height:  auto;
-    }
-  </style>
-
-
   
   
   <!-- # TEMPLATES -->

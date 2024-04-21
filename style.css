@@ -1,7 +1,15 @@
 .d-flex{display:flex}.d-grid{display:grid}
 .flex-wrap{flex-wrap:wrap}
 .gap-half{gap:0.5rem}
-.pb-half{padding-bottom:0.5rem}
 
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
+
+video {
+  width: 854px;
+  height:  auto;
+}
+
+.void{display:flex}
+.void-tenth{padding-bottom:0.1rem}.void-quarter{padding-bottom:0.25rem}.void-half{padding-bottom:0.5rem}.void-full,.void-1x{padding-bottom:1rem}.void-2x{padding-bottom:2rem}
+.obsoletes{display:none!important;height:0!important;width:0!important;overflow:hidden!important;visibility:hidden!important;position:absolute!important}
