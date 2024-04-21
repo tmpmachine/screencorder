@@ -2,12 +2,14 @@ let chunks = [];
 
 let app = (function() {
   
+  'use strict';
+  
   let $$ = document.querySelectorAll.bind(document);
   
   let SELF = {
+    Init,
     StartCapture,
     TogglePause,
-    PreviewRecord,
     GetData,
     ResumeRecording,
     PauseRecording,
@@ -15,11 +17,42 @@ let app = (function() {
     PreviewPaused,
     RenameLastRecord,
     DownloadAll,
-    FinalizeRecord,
-    DownloadAll,
+    HandleClickRecordingList,
+    GetVideo,
   };
   
   let fileCounter = 1;
+  let local = {
+    customStore: null,
+  };
+  
+  async function GetVideo() {
+    await idbKeyval.get('hello', local.customStore).then((val) => console.log(val));
+  }
+  
+  function Init() {
+    local.customStore = idbKeyval.createStore(`db-${GLOBAL.appId}`, 'recordings');
+  }
+  
+  function HandleClickRecordingList(evt) {
+    if (!evt.target.dataset.callback) return;
+    
+    let itemEl = evt.target.closest('[data-kind="itemRecording"]');
+    let id = itemEl?.dataset.id;
+    
+    switch (evt.target.dataset.callback) {
+      case 'delete': deleteRecord(itemEl); break;
+      case 'rename': renameRecord(id); break;
+      case 'finalize': finalizeRecord(id); break;
+      case 'download': downloadRecord(itemEl, id); break;
+      case 'preview': previewRecord(id); break;
+    }
+  }
+  
+  function deleteRecord(itemEl) {
+    itemEl?.remove();
+  }
+
   
   function DownloadAll() {
     for (let el of $$('#recording-list-final [data-id]')) {
@@ -27,11 +60,15 @@ let app = (function() {
     }
   }
   
-  function FinalizeRecord(id) {
+  function finalizeRecord(id) {
+    
+    let data = GetData(id);
+    idbKeyval.set('hello', data.blob, local.customStore);
+    
     let finalRecordEl = $(`#recording-list [data-id="${id}"]`);
     finalRecordEl.querySelector('[data-slot="title"]').textContent = fileCounter;
     let finalContainer = $('#recording-list-final');
-    finalContainer.append(finalRecordEl)
+    finalContainer.append(finalRecordEl);
     
     fileCounter += 1;
   }
@@ -68,10 +105,10 @@ let app = (function() {
   
   function ToggleRecordAuto() {
     if (stream && window.mediaRecorder && (window.mediaRecorder.state == 'recording' || window.mediaRecorder.state == 'paused')) {
-      stopRecording()
+      stopRecording();
     } else {
       if (stream) {
-        initCapture()
+        initCapture();
       } else {
         app.StartCapture();
       }
@@ -80,20 +117,20 @@ let app = (function() {
 
   
   function ResumeRecording() {
-    window.mediaRecorder.resume()
-    document.title = 'Recording'
+    window.mediaRecorder.resume();
+    document.title = 'Recording';
   }
   
   function PauseRecording() {
-    window.mediaRecorder.pause()
-    document.title = 'Paused'
+    window.mediaRecorder.pause();
+    document.title = 'Paused';
   }
   
   function GetData(id) {
     return recordingData.find(x => x.id == id);
   }
   
-  function PreviewRecord(id) {
+  function previewRecord(id) {
     let data = getData(id);
     
     let el = document.createElement('a');
@@ -109,11 +146,11 @@ let app = (function() {
   
   function TogglePause() {
     if (window.mediaRecorder.state == 'paused') {
-      window.mediaRecorder.resume()
-      document.title = 'Recording'
+      window.mediaRecorder.resume();
+      document.title = 'Recording';
     } else if (window.mediaRecorder.state == 'recording') {
-      window.mediaRecorder.pause()
-      document.title = 'Paused'
+      window.mediaRecorder.pause();
+      document.title = 'Paused';
     }
   }
   
@@ -211,55 +248,6 @@ let isCapture = false;
 
 
 
-let DOMEvents = (function() {
-    
-  let eventsMap = {
-  	clickable: {
-  		'recording-list-handler': (evt) => recordingListHandler(evt),
-  	},
-    onclick: {
-    	'start-capture': () => app.StartCapture(),
-  		'download-all': () => app.DownloadAll(),
-    },
-  };
-  
-  let listenOn=function(e,t,l){for(let n of document.querySelectorAll(e))n.addEventListener(t,l[n.dataset.callback])};
-    
-  let listening = function(selector, dataKey, eventType, callbacks) {
-    let elements = document.querySelectorAll(selector);
-    for (let el of elements) {
-      let callbackFunc = callbacks[el.dataset[dataKey]];
-      el.addEventListener(eventType, callbackFunc);
-    }
-  };
-  
-  function Init() {
-    listening('[data-onclick]', 'onclick', 'click', eventsMap.onclick);
-    listenOn('.clickable', 'click', eventsMap.clickable);
-  }
-  
-  return {
-    Init,
-  };
-
-})();
-
-
-
-function recordingListHandler(evt) {
-  if (!evt.target.dataset.callback) return;
-  
-  let recordingEl = evt.target.closest('.i-item');
-  let id = recordingEl.dataset.id;
-  switch (evt.target.dataset.callback) {
-    case 'delete': deleteRecord(id); break;
-    case 'rename': renameRecord(id); break;
-    case 'finalize': app.FinalizeRecord(id); break;
-    case 'download': downloadRecord(recordingEl, id); break;
-    case 'preview': app.PreviewRecord(id); break;
-  }
-}
-
 function renameRecord(id) {
   let data = getData(id);
   let title = window.prompt('title', data.title);
@@ -286,13 +274,6 @@ function downloadRecord(recordingEl, id) {
   document.body.append(el);
   el.click();
 }
-
-function deleteRecord(id) {
-  let data = getData(id);
-  
-  $(`#recording-list [data-id="${id}"]`).remove();
-}
-
 
 function getData(id) {
   return app.GetData(id);
@@ -363,6 +344,7 @@ function initCapture() {
       // stream.getTracks().forEach(x => x.stop());
       
       let data = {
+        blob,
         id: generateRandomId(),
         title: clipName,
         url: audioURL,
@@ -477,25 +459,6 @@ window.$ = document.querySelector.bind(document);
   
   let onePress = OnePress();
 
-  function initGamepad() {
-    gameControl.on('connect', function(gamepad) {
-      
-      let timer1 = 0;
-      let timer2 = 0;
-      let timer3 = 0;
-      let timer4 = 0;
-      
-      gamepad.on('button0', () => {
-        if (onePress.watch('keydown', 'button0')) {
-          toggleRecord();
-        }
-      }).after('button0', () => {
-        onePress.watch('keyup', 'button0');
-      });
-      
-    });
-    
-  }
   
   let i = 0;
   function toggleRecord() {
@@ -506,8 +469,6 @@ window.$ = document.querySelector.bind(document);
     else
       app.StartCapture();
   }
-  
-  initGamepad()
   
   window.addEventListener('keydown', keyHandler)
   window.addEventListener('keyup', keyHandler)
