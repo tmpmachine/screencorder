@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1, minimum-scale=1"/>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  <link href="style.css" rel="stylesheet"/>
+  <link rel="manifest" href="manifest.json"/>
+
+</head>
+<body>
+  
+  <!-- # capture options -->
+  [ {p:1rem}
+    
+    <!-- # capture control -->
+    [
+      <!-- # action buttons -->
+      [ .d-flex .gap-half .flex-wrap
+        [btn data-onclick="start-capture" 'Capture']
+        [btn onclick="app.ToggleRecordAuto()" 'Start Capture']
+        [btn onclick="stopRecording()" 'Stop Capture']
+        [btn onclick="app.ResumeRecording()" 'Resume Capture']
+        [btn onclick="app.PauseRecording()" 'Pause Capture']
+        [btn onclick="preview()" 'Preview']
+        [btn onclick="download()" 'Download']
+        [btn onclick="setEndTime()" 'Set End Time']
+      ]
+      [ .pb-half]
+      <!--# cache control-->
+      [ .d-flex .gap-half .flex-wrap
+        [btn 'Check updates' onclick="window.pwa.update()"]
+        [btn 'Remove updates' onclick="window.pwa.removeUpdate()"]
+      ]
+      [ .pb-half]
+      
+      <!-- # audio controls -->
+      [
+        [l
+          [in type="checkbox" #in-check-record-mic]
+          Record mic audio
+        ]
+      ]
+    ]
+      
+    <!-- # recording list -->
+    [ .d-grid {cols:1fr 1fr}
+      [ #recording-list .clickable data-callback='recording-list-handler' {pt:1rem}]
+      [
+        [btn 'Download all' data-onclick="download-all"]
+        [ .void-half]
+        
+        [ #recording-list-final .clickable data-callback='recording-list-handler' {pt:1rem}]
+      ]
+    ]
+  ]
+  
+  <script src="pwa.js"></script>
+  <script> window.asd = console.log; </script>
+	<script src="https://cdn.jsdelivr.net/gh/alvaromontoro/gamecontroller.js@1.5.0/dist/gamecontroller.min.js"></script>
+
+  <style>
+    video {
+      width: 854px;
+      height:  auto;
+    }
+  </style>
+
+
+  
+  <script src="https://cdn.jsdelivr.net/gh/tmpmachine/templateslot.js@v1.0.0/templateslot.min.js"></script>
+  <template id='tmp-list-posts'>
+    [ .i-item data-id='{0}'
+      [ data-slot='title']
+      [btn 'Delete' data-callback="delete"]
+      [btn 'Rename' data-callback="rename"]
+      [btn 'Finalize' data-callback="finalize"]
+      [btn 'Download' data-callback="download"]
+      [btn 'Preview' data-callback="preview"]
+    ]
+  </template>
+
+  <script src="app.js"></script>
+  <!-- firebase signaling setup -->
+<script type="module">
+  
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } 
+    from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+  import { getFirestore, doc, onSnapshot } 
+    from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyCG3IpTIgq20Vi-nE3RpkbCMWzlelb5yQ0",
+    authDomain: "project-58880.firebaseapp.com",
+    databaseURL: "https://project-58880.firebaseio.com",
+    projectId: "project-58880",
+    storageBucket: "project-58880.appspot.com",
+    messagingSenderId: "211848363824",
+    appId: "1:211848363824:web:62abdd3d374253cdd012f5"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  
+  
+  // Initialize Cloud Firestore and get a reference to the service
+  const db = getFirestore(app);
+
+
+  // set initial value
+  let startSignal = -999;
+  let pauseSignal = -999;
+  let firstLoad = false;
+  
+  // listen for changes 
+  let collectionId = "screencorder";
+  let documentId = "oD4mjt474F98AdX2Os4e"
+  const unsub = onSnapshot(doc(db, collectionId, documentId), (doc) => {
+    
+    let data = doc.data();
+    if (startSignal == -999) {
+      // first load
+      startSignal = data.startSignal+1;
+    } else if (startSignal == data.startSignal) {
+      // the actual trigger
+      // todo: do your things here
+      asd('record')
+      startSignal = data.startSignal+1;
+      toggleRecordAuto()
+      // document.querySelector('h1').textContent = 'Counter : ' + data.signalCounter;
+    }
+    
+    // console.log("Current data: ", doc.data());
+    
+    if (pauseSignal == -999) {
+      // first load
+      pauseSignal = data.pauseSignal+1;
+    } else if (pauseSignal == data.pauseSignal) {
+      asd('paused')
+      // the actual trigger
+      // todo: do your things here
+      pauseSignal = data.pauseSignal+1;
+      togglePause()
+      // document.querySelector('h1').textContent = 'Counter : ' + data.signalCounter;
+    }
+    
+    // asd(startSignal, pauseSignal, data)
+      
+  });
+
+  
+  </script>
+  
+</body>
+</html>

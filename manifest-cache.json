@@ -1,0 +1,11 @@
+{
+  "etc": [
+    "style.css",
+    "app.js"
+  ],
+  "root": [
+    "pwa.js",
+    "index.html",
+    "manifest.json"
+  ]
+}

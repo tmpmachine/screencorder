@@ -1,0 +1,7 @@
+.d-flex{display:flex}.d-grid{display:grid}
+.flex-wrap{flex-wrap:wrap}
+.gap-half{gap:0.5rem}
+.pb-half{padding-bottom:0.5rem}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
