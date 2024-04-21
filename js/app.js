@@ -63,7 +63,7 @@ let app = (function() {
   function finalizeRecord(id) {
     
     let data = GetData(id);
-    idbKeyval.set('hello', data.blob, local.customStore);
+    // idbKeyval.set('hello', data.blob, local.customStore);
     
     let finalRecordEl = $(`#recording-list [data-id="${id}"]`);
     finalRecordEl.querySelector('[data-slot="title"]').textContent = fileCounter;
