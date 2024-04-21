@@ -1,10 +1,14 @@
 {
   "etc": [
-    "style.css",
-    "app.js"
+    "js/dom-events.js",
+    "js/app.js",
+    "index.js",
+    "https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js",
+    "https://cdn.jsdelivr.net/gh/tmpmachine/templateslot.js@v1.0.0/templateslot.min.js",
+    "style.css"
   ],
   "root": [
-    "pwa.js",
+    "js/pwa.js",
     "index.html",
     "manifest.json"
   ]
