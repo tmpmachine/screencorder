@@ -325,9 +325,9 @@ function getData(id) {
 
 
 function initCapture() {
-  if (!navigator.mediaDevices)
+  if (!navigator.mediaDevices) {
     console.log("getUserMedia not supported.");
-
+  }
 
   const constraints = { audio: true };
 
@@ -340,7 +340,6 @@ function initCapture() {
     
     mediaRecorder.onstop = async (e) => {
       isCapture = false;
-      console.log("data available after MediaRecorder.stop() called.");
 
       const clipName = 'untitled';
 
