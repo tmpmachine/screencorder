@@ -31,7 +31,39 @@ let app = (function() {
   }
   
   function Init() {
+    // init db store
     local.customStore = idbKeyval.createStore(`db-${GLOBAL.appId}`, 'recordings');
+    
+    listRecentRecordingsAsync();
+  }
+  
+  async function listRecentRecordingsAsync() {
+    let entries = await idbKeyval.entries(local.customStore);
+    // console.log(entries)
+    
+    for (let item of entries) {
+      let {blob, id, title} = item[1];
+      let data = {
+        blob,
+        id,
+        title,
+        url: URL.createObjectURL(blob),
+      };
+      recordingData.push(data);
+      appendFinalRecordingEl(data);
+    }
+  }
+  
+  function appendFinalRecordingEl(data) {
+    let docFrag = document.createDocumentFragment();
+    let el = window.templateSlot.fill({
+      data, 
+      template: document.querySelector('#tmp-list-posts').content.cloneNode(true), 
+    });
+    
+    el.querySelector('[data-kind="itemRecording"]').dataset.id = data.id;
+    docFrag.append(el);
+    $('._listFinalRecording').append(docFrag);
   }
   
   function HandleClickRecordingList(evt) {
@@ -41,7 +73,7 @@ let app = (function() {
     let id = itemEl?.dataset.id;
     
     switch (evt.target.dataset.callback) {
-      case 'delete': deleteRecord(itemEl); break;
+      case 'delete': deleteRecord(id, itemEl); break;
       case 'rename': renameRecord(id); break;
       case 'finalize': finalizeRecord(id); break;
       case 'download': downloadRecord(itemEl, id); break;
@@ -49,7 +81,12 @@ let app = (function() {
     }
   }
   
-  function deleteRecord(itemEl) {
+  function deleteRecord(id, itemEl) {
+    let data = GetData(id);
+    
+    if (data) {
+      idbKeyval.del(data.id, local.customStore); 
+    }
     itemEl?.remove();
   }
 
@@ -60,15 +97,20 @@ let app = (function() {
     }
   }
   
-  function finalizeRecord(id) {
+  function finalizeRecord(_id) {
     
-    let data = GetData(id);
-    // idbKeyval.set('hello', data.blob, local.customStore);
-    
+    let {id, blob, url} = GetData(_id);
     let finalRecordEl = $(`#recording-list [data-id="${id}"]`);
+    let updatedData = {
+      id,
+      blob,
+      url,
+      title: fileCounter,
+    };
+    
     finalRecordEl.querySelector('[data-slot="title"]').textContent = fileCounter;
-    let finalContainer = $('#recording-list-final');
-    finalContainer.append(finalRecordEl);
+    $('._listFinalRecording')?.append(finalRecordEl);
+    idbKeyval.set(id, updatedData, local.customStore);
     
     fileCounter += 1;
   }
