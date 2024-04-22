@@ -238,11 +238,15 @@ let app = (function() {
       // merge mic audio stream
       if ($('#in-check-record-mic').checked) {
         let micStream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-          echoCancellation: false,
-          noiseSuppression: false,
-          sampleRate: 44100,
+          audio: {
+            echoCancellation: false,
+            autoGainControl: false,
+            noiseSuppression: false,
+            channelCount: 2,
+            sampleRate: 48000,
+          },
         });
+        
         stream = mergeStream(stream, micStream);
       }
       
