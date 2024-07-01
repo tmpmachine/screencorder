@@ -117,10 +117,19 @@ let app = (function() {
   
   function RenameLastRecord() {
     let finalRecordEl = Array.from(document.querySelectorAll(`#recording-list [data-id]`)).pop();
-    finalRecordEl.querySelector('[data-slot="title"]').textContent = fileCounter;
+    let id = finalRecordEl.dataset.id;
     
-    let finalContainer = $('#recording-list-final');
-    finalContainer.append(finalRecordEl)
+    let {blob, url} = GetData(id);
+    let updatedData = {
+      id,
+      blob,
+      url,
+      title: fileCounter,
+    };
+    
+    finalRecordEl.querySelector('[data-slot="title"]').textContent = fileCounter;
+    $('._listFinalRecording')?.append(finalRecordEl)
+    idbKeyval.set(id, updatedData, local.customStore);
     
     fileCounter += 1;
     let notif = new Notification('Renamed');
@@ -639,7 +648,7 @@ function onMIDIMessage(event) {
     app.RenameLastRecord();
   } else if (data[1] == 84) { // last note
     app.DownloadAll();
-  }
+  } 
   
   // // if (window.mediaRecorder.state == 'paused') {
   //   if (data[2] === 0) {

@@ -1,6 +1,7 @@
 {
   "etc": [
     "js/dom-events.js",
+    "js/ui.js",
     "js/app.js",
     "index.js",
     "https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js",
