@@ -10,7 +10,6 @@ let app = (function() {
     Init,
     StartCapture,
     TogglePause,
-    GetData,
     ResumeRecording,
     PauseRecording,
     ToggleRecordAuto,
@@ -22,6 +21,7 @@ let app = (function() {
   };
   
   let fileCounter = 1;
+  // # local
   let local = {
     customStore: null,
   };
@@ -35,11 +35,12 @@ let app = (function() {
     local.customStore = idbKeyval.createStore(`db-${GLOBAL.appId}`, 'recordings');
     
     listRecentRecordingsAsync();
+    compoPreview.Init();
   }
   
+  // # list
   async function listRecentRecordingsAsync() {
-    let entries = await idbKeyval.entries(local.customStore);
-    // console.log(entries)
+    let entries = await compoRecording.GetAll_();
     
     for (let item of entries) {
       let {blob, id, title} = item[1];
@@ -49,7 +50,7 @@ let app = (function() {
         title,
         url: URL.createObjectURL(blob),
       };
-      recordingData.push(data);
+      compoRecording.Add(data);
       appendFinalRecordingEl(data);
     }
   }
@@ -77,12 +78,12 @@ let app = (function() {
       case 'rename': renameRecord(id); break;
       case 'finalize': finalizeRecord(id); break;
       case 'download': downloadRecord(itemEl, id); break;
-      case 'preview': previewRecord(id); break;
+      case 'preview': compoPreview.PlayFromId(id); break;
     }
   }
   
   function deleteRecord(id, itemEl) {
-    let data = GetData(id);
+    let data = compoRecording.GetDataById(id);
     
     if (data) {
       idbKeyval.del(data.id, local.customStore); 
@@ -98,28 +99,14 @@ let app = (function() {
   }
   
   function finalizeRecord(_id) {
-    
-    let {id, blob, url} = GetData(_id);
-    let finalRecordEl = $(`#recording-list [data-id="${id}"]`);
-    let updatedData = {
-      id,
-      blob,
-      url,
-      title: fileCounter,
-    };
-    
-    finalRecordEl.querySelector('[data-slot="title"]').textContent = fileCounter;
-    $('._listFinalRecording')?.append(finalRecordEl);
-    idbKeyval.set(id, updatedData, local.customStore);
-    
-    fileCounter += 1;
+    compoRecording.Store(_id);
   }
   
   function RenameLastRecord() {
     let finalRecordEl = Array.from(document.querySelectorAll(`#recording-list [data-id]`)).pop();
     let id = finalRecordEl.dataset.id;
     
-    let {blob, url} = GetData(id);
+    let {blob, url} = compoRecording.GetDataById(id);
     let updatedData = {
       id,
       blob,
@@ -177,21 +164,19 @@ let app = (function() {
     document.title = 'Paused';
   }
   
-  function GetData(id) {
-    return recordingData.find(x => x.id == id);
-  }
   
+  // # preview
   function previewRecord(id) {
-    let data = getData(id);
+    // let data = getData(id);
     
-    let el = document.createElement('a');
-    el.href = data.url;
-    el.target = '_blank';
-    el.onclick = function() {
-      el.remove();
-    };
-    document.body.append(el);
-    el.click();
+    // let el = document.createElement('a');
+    // el.href = data.url;
+    // el.target = '_blank';
+    // el.onclick = function() {
+    //   el.remove();
+    // };
+    // document.body.append(el);
+    // el.click();
     
   }
   
@@ -304,7 +289,7 @@ let isCapture = false;
 
 
 function renameRecord(id) {
-  let data = getData(id);
+  let data = compoRecording.GetDataById(id);
   let title = window.prompt('title', data.title);
   if (!title) return;
   
@@ -315,7 +300,7 @@ function renameRecord(id) {
 
 
 function downloadRecord(recordingEl, id) {
-  let data = getData(id);
+  let data = compoRecording.GetDataById(id);
   
   let fileNameNoExt = recordingEl.querySelector('[data-slot="title"]').textContent;
   
@@ -329,12 +314,6 @@ function downloadRecord(recordingEl, id) {
   document.body.append(el);
   el.click();
 }
-
-function getData(id) {
-  return app.GetData(id);
-}
-
-
 
 
 function initCapture() {
@@ -403,7 +382,7 @@ function initCapture() {
         title: clipName,
         url: audioURL,
       }
-      recordingData.push(data);
+      compoRecording.Add(data);
       appendRecordingEl(data);
               
     };
@@ -433,7 +412,6 @@ function generateRandomId() {
 
 window.$ = document.querySelector.bind(document);
 
-  let recordingData = [];
   
   function appendRecordingEl(data) {
     let docFrag = document.createDocumentFragment()
@@ -600,8 +578,8 @@ window.$ = document.querySelector.bind(document);
 // ================
 
 // Request access to MIDI devices
-navigator.requestMIDIAccess()
-  .then(onMIDISuccess, onMIDIFailure);
+navigator.requestMIDIAccess({ sysex: true }).then(onMIDISuccess, onMIDIFailure);
+
 
 // MIDI success callback
 function onMIDISuccess(midiAccess) {
@@ -622,6 +600,7 @@ function onMIDIFailure(error) {
 
 // MIDI state change callback
 function onMIDIStateChange(event) {
+  console.log(event)
   // const { port, port.state } = event;
   // console.log('MIDI device state changed:', port.name, port.state);
   // You can perform actions based on the MIDI device state change
@@ -634,8 +613,7 @@ function onMIDIMessage(event) {
   const { data } = event;
   
   // 144 = pressed
-  
-  if (data[0] != 144) return;
+  if (!(data[0] == 144 || data[0] == 146)) return;
   
   // console.log(data[1])
   if (data[1] == 60) {

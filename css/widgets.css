@@ -1,0 +1,15 @@
+.wg-ListSavedRecording {
+  ._active {
+    background: lightblue;
+  }
+}
+
+.gg-PreviewVideo {
+  width: 100%;
+  aspect-ratio: 16/9;
+}
+
+.wg-Preview {
+  background: #222222;
+  height: 600px;
+}

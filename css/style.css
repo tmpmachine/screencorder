@@ -1,6 +1,8 @@
 .d-flex{display:flex}.d-grid{display:grid}
 .flex-wrap{flex-wrap:wrap}
-.gap-half{gap:0.5rem}
+.align-items-center{align-items:center}
+.justify-content-center{justify-content:center}
+.gap-quarter{gap:0.25rem}.gap-half{gap:0.5rem}.gap-full{gap:1rem}
 
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}

@@ -7,6 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   
   <link href="css/style.css" rel="stylesheet"/>
+  <link href="css/widgets.css" rel="stylesheet"/>
   <link rel="manifest" href="manifest.json"/>
 
 </head>
@@ -15,43 +16,53 @@
   <!-- # capture options -->
   [ {p:1rem}
     
-    <!-- # capture control -->
-    [
-      <!-- # action buttons -->
-      [ .d-flex .gap-half .flex-wrap
-        [btn data-onclick="start-capture" 'Start Capture']
-        [btn onclick="app.ToggleRecordAuto()" 'Record']
-        [btn onclick="stopRecording()" 'Stop']
-        [btn onclick="app.PauseRecording()" 'Pause']
-        [btn onclick="app.ResumeRecording()" 'Resume']
-        [btn onclick="preview()" 'Preview' .obsoletes]
-        [btn onclick="download()" 'Download' .obsoletes]
-        [btn onclick="setEndTime()" 'Set End Time' .obsoletes]
-        |
-        <!--# cache control-->
-        [btn 'Check updates' onclick="window.pwa.update()"]
-        [btn 'Remove updates' onclick="window.pwa.removeUpdate()"]
-      ]
-      [ .void .void-half]
-      
-      <!-- # audio controls -->
+    [ .d-grid {cols:200px 1fr 200px} .gap-full
       [
-        [l
-          [in type="checkbox" #in-check-record-mic]
-          Record mic audio
+        <!-- # record actions -->
+        [ .d-flex .gap-half .flex-wrap
+          [btn data-onclick="start-capture" 'Start Capture']
+          [btn onclick="app.ToggleRecordAuto()" 'Record']
+          [btn onclick="stopRecording()" 'Stop']
+          [btn onclick="app.PauseRecording()" 'Pause']
+          [btn onclick="app.ResumeRecording()" 'Resume']
+        ]
+        <!-- # audio controls -->
+        [
+          [l
+            [in type="checkbox" #in-check-record-mic]
+            Record mic audio
+          ]
+        ]
+        [ .void .void-full]
+        <!-- # recording list, # list recording -->
+        [ ._listRecording #recording-list data-onclick="handle-click-recording-list" {pt:1rem}]
+      ]
+      
+      [
+        <!-- # action buttons -->
+        [ .d-flex .gap-half .flex-wrap
+          [btn onclick="preview()" 'Preview' .obsoletes]
+          [btn onclick="download()" 'Download' .obsoletes]
+          [btn onclick="setEndTime()" 'Set End Time' .obsoletes]
+          <!--# cache control-->
+          [btn 'Check updates' onclick="window.pwa.update()"]
+          [btn 'Remove updates' onclick="window.pwa.removeUpdate()"]
+        ]
+        [ .void .void-half]
+        <!-- # preview video -->
+        [ .wg-Preview .d-flex .justify-content-center .align-items-center
+          [v controls .gg-PreviewVideo ._previewVideo]
         ]
       ]
-    ]
       
-    <!-- # recording list -->
-    [ .d-grid {cols:1fr 1fr}
-      [ ._listRecording #recording-list data-onclick="handle-click-recording-list" {pt:1rem}]
       [
         [btn 'Download all' data-onclick="download-all"]
         [ .void-half]
         
         <!-- # final recording -->
-        [ #recording-list-final ._listFinalRecording data-onclick="handle-click-recording-list" {pt:1rem}]
+        [ #recording-list-final .wg-ListSavedRecording ._listFinalRecording data-onclick="handle-click-recording-list" {pt:1rem}]
+        [ .void .void-2x]
+  
       ]
     ]
   ]
@@ -61,32 +72,34 @@
     [ .i-item data-id="" data-kind="itemRecording"
       <!-- #tmp-list-posts -->
       [ data-slot='title']
-      [btn 'Delete' data-callback="delete"]
-      [btn 'Rename' data-callback="rename"]
-      [btn 'Finalize' data-callback="finalize"]
-      [btn 'Download' data-callback="download"]
-      [btn 'Preview' data-callback="preview"]
+      [ .d-flex .flex-wrap .gap-quarter
+        [btn 'Delete' data-callback="delete"]
+        [btn 'Rename' data-callback="rename"]
+        [btn 'Finalize' data-callback="finalize"]
+        [btn 'Download' data-callback="download"]
+        [btn 'Preview' data-callback="preview"]
+      ]
     ]
   </template>
   <template id="tmp-item-finalized">
     [ .i-item data-id="" data-kind="itemRecording"
       <!-- #tmp-list-posts -->
       [ data-slot='title']
-      [btn 'Delete' data-callback="delete"]
-      [btn 'Rename' data-callback="rename"]
-      [btn 'Download' data-callback="download"]
-      [btn 'Preview' data-callback="preview"]
+      [ .d-flex .flex-wrap .gap-quarter
+        [btn 'Delete' data-callback="delete"]
+        [btn 'Rename' data-callback="rename"]
+        [btn 'Download' data-callback="download"]
+        [btn 'Preview' data-callback="preview"]
+      ]
     ]
   </template>
 
   <script src="https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/tmpmachine/templateslot.js@v1.0.0/templateslot.min.js"></script>
   
-  <script src="js/ui.js"></script>
   <script src="js/pwa.js"></script>
   <script src="js/dom-events.js"></script>
-  <script src="js/app.js"></script>
-  <script src="index.js"></script>
+  <script src="index.js" type="module"></script>
   
 </body>
 </html>
