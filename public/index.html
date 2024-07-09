@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta name="viewport" content="initial-scale=1, width=device-width, maximum-scale=1, minimum-scale=1"/>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  <link href="css/style.css" rel="stylesheet"/>
+  <link href="css/widgets.css" rel="stylesheet"/>
+  <link rel="manifest" href="manifest.json"/>
+
+</head>
+<body>
+  
+  <!-- # capture options -->
+  <div style="padding:1rem;">
+    
+    <div class="d-grid gap-full" style="grid-template-columns:200px 1fr 200px;">
+      <div>
+        <!-- # record actions -->
+        <div class="d-flex gap-half flex-wrap">
+          <button data-onclick="start-capture">Start Capture</button>
+          <button onclick="app.ToggleRecordAuto()">Record</button>
+          <button onclick="stopRecording()">Stop</button>
+          <button onclick="app.PauseRecording()">Pause</button>
+          <button onclick="app.ResumeRecording()">Resume</button>
+        </div>
+        <!-- # audio controls -->
+        <div>
+          <label>
+            <input id="in-check-record-mic" type="checkbox"/>
+            Record mic audio
+          </label>
+        </div>
+        <div class="void void-full"></div>
+        <!-- # recording list, # list recording -->
+        <div id="recording-list" class="_listRecording" data-onclick="handle-click-recording-list" style="padding-top:1rem;"></div>
+      </div>
+      
+      <div>
+        <!-- # action buttons -->
+        <div class="d-flex gap-half flex-wrap">
+          <button class="obsoletes" onclick="preview()">Preview</button>
+          <button class="obsoletes" onclick="download()">Download</button>
+          <button class="obsoletes" onclick="setEndTime()">Set End Time</button>
+          <!--# cache control-->
+          <button onclick="window.pwa.update()">Check updates</button>
+          <button onclick="window.pwa.removeUpdate()">Remove updates</button>
+        </div>
+        <div class="void void-half"></div>
+        <!-- # preview video -->
+        <div class="wg-Preview d-flex justify-content-center align-items-center">
+          <video class="gg-PreviewVideo _previewVideo" controls></video>
+        </div>
+      </div>
+      
+      <div>
+        <button data-onclick="download-all">Download all</button>
+        <div class="void-half"></div>
+        
+        <!-- # final recording -->
+        <div id="recording-list-final" class="wg-ListSavedRecording _listFinalRecording" data-onclick="handle-click-recording-list" style="padding-top:1rem;"></div>
+        <div class="void void-2x"></div>
+  
+      </div>
+    </div>
+  </div>
+  
+  <!-- # TEMPLATES -->
+  <template id="tmp-list-posts">
+    <div class="i-item" data-id="" data-kind="itemRecording">
+      <!-- #tmp-list-posts -->
+      <div data-slot='title'></div>
+      <div class="d-flex flex-wrap gap-quarter">
+        <button data-callback="delete">Delete</button>
+        <button data-callback="rename">Rename</button>
+        <button data-callback="finalize">Finalize</button>
+        <button data-callback="download">Download</button>
+        <button data-callback="preview">Preview</button>
+      </div>
+    </div>
+  </template>
+  <template id="tmp-item-finalized">
+    <div class="i-item" data-id="" data-kind="itemRecording">
+      <!-- #tmp-list-posts -->
+      <div data-slot='title'></div>
+      <div class="d-flex flex-wrap gap-quarter">
+        <button data-callback="delete">Delete</button>
+        <button data-callback="rename">Rename</button>
+        <button data-callback="download">Download</button>
+        <button data-callback="preview">Preview</button>
+      </div>
+    </div>
+  </template>
+
+  <script src="https://cdn.jsdelivr.net/npm/idb-keyval@6/dist/umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/tmpmachine/templateslot.js@v1.0.0/templateslot.min.js"></script>
+  
+  <script src="js/pwa.js"></script>
+  <script src="js/dom-events.js"></script>
+  <script src="index.js" type="module"></script>
+  
+</body>
+</html>

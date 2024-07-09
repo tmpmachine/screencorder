@@ -1,0 +1,16 @@
+{
+  "projects": {
+    "default": "pacolemon"
+  },
+  "targets": {
+    "pacolemon": {
+      "hosting": {
+        "screencorder": [
+          "screencorder"
+        ]
+      }
+    }
+  },
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
+}
