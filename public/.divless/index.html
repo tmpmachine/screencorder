@@ -30,10 +30,12 @@
         [
           [l
             [in type="checkbox" #in-check-record-mic]
-            Record mic audio
+            Record mic audio (changes require page reload)
           ]
         ]
         [ .void .void-full]
+
+        [h4 'Recordings :' .gg-section-title]
         <!-- # recording list, # list recording -->
         [ ._listRecording #recording-list data-onclick="handle-click-recording-list" {pt:1rem}]
       ]
@@ -45,8 +47,18 @@
           [btn onclick="download()" 'Download' .obsoletes]
           [btn onclick="setEndTime()" 'Set End Time' .obsoletes]
           <!--# cache control-->
-          [btn 'Check updates' onclick="window.pwa.update()"]
-          [btn 'Remove updates' onclick="window.pwa.removeUpdate()"]
+          [btn 'Cache' onclick="window.pwa.update()"]
+          [btn 'Remove offline cache' onclick="window.pwa.removeUpdate()"]
+        ]
+        [ .void .void-quarter]
+        <!-- # cache info -->
+        [small
+          [
+            Cache: download latest version & enable offline access.
+          ]
+          [
+            Remove offline cache: always load latest version (requires internet).
+          ]
         ]
         [ .void .void-half]
         <!-- # preview video -->
@@ -59,8 +71,9 @@
         [btn 'Download all' data-onclick="download-all"]
         [ .void-half]
         
+        [h4 'Stored Recordings :' .gg-section-title]
         <!-- # final recording -->
-        [ #recording-list-final .wg-ListSavedRecording ._listFinalRecording data-onclick="handle-click-recording-list" {pt:1rem}]
+        [ #recording-list-final .wg-ListSavedRecording ._listFinalRecording data-onclick="handle-click-recording-list"]
         [ .void .void-2x]
   
       ]
@@ -75,7 +88,7 @@
       [ .d-flex .flex-wrap .gap-quarter
         [btn 'Delete' data-callback="delete"]
         [btn 'Rename' data-callback="rename"]
-        [btn 'Finalize' data-callback="finalize"]
+        [btn 'Store' data-callback="finalize"]
         [btn 'Download' data-callback="download"]
         [btn 'Preview' data-callback="preview"]
       ]
@@ -87,7 +100,7 @@
       [ data-slot='title']
       [ .d-flex .flex-wrap .gap-quarter
         [btn 'Delete' data-callback="delete"]
-        [btn 'Rename' data-callback="rename"]
+        <!--[btn 'Rename' data-callback="rename"] -->
         [btn 'Download' data-callback="download"]
         [btn 'Preview' data-callback="preview"]
       ]

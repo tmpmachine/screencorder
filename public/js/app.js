@@ -59,7 +59,7 @@ let app = (function() {
     let docFrag = document.createDocumentFragment();
     let el = window.templateSlot.fill({
       data, 
-      template: document.querySelector('#tmp-list-posts').content.cloneNode(true), 
+      template: document.querySelector('#tmp-item-finalized').content.cloneNode(true), 
     });
     
     el.querySelector('[data-kind="itemRecording"]').dataset.id = data.id;

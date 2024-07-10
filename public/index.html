@@ -30,10 +30,12 @@
         <div>
           <label>
             <input id="in-check-record-mic" type="checkbox"/>
-            Record mic audio
+            Record mic audio (changes require page reload)
           </label>
         </div>
         <div class="void void-full"></div>
+
+        <h4 class="gg-section-title">Recordings :</h4>
         <!-- # recording list, # list recording -->
         <div id="recording-list" class="_listRecording" data-onclick="handle-click-recording-list" style="padding-top:1rem;"></div>
       </div>
@@ -45,9 +47,19 @@
           <button class="obsoletes" onclick="download()">Download</button>
           <button class="obsoletes" onclick="setEndTime()">Set End Time</button>
           <!--# cache control-->
-          <button onclick="window.pwa.update()">Check updates</button>
-          <button onclick="window.pwa.removeUpdate()">Remove updates</button>
+          <button onclick="window.pwa.update()">Cache</button>
+          <button onclick="window.pwa.removeUpdate()">Remove offline cache</button>
         </div>
+        <div class="void void-quarter"></div>
+        <!-- # cache info -->
+        <small>
+          <div>
+            Cache: download latest version & enable offline access.
+          </div>
+          <div>
+            Remove offline cache: always load latest version (requires internet).
+          </div>
+        </small>
         <div class="void void-half"></div>
         <!-- # preview video -->
         <div class="wg-Preview d-flex justify-content-center align-items-center">
@@ -59,8 +71,9 @@
         <button data-onclick="download-all">Download all</button>
         <div class="void-half"></div>
         
+        <h4 class="gg-section-title">Stored Recordings :</h4>
         <!-- # final recording -->
-        <div id="recording-list-final" class="wg-ListSavedRecording _listFinalRecording" data-onclick="handle-click-recording-list" style="padding-top:1rem;"></div>
+        <div id="recording-list-final" class="wg-ListSavedRecording _listFinalRecording" data-onclick="handle-click-recording-list"></div>
         <div class="void void-2x"></div>
   
       </div>
@@ -75,7 +88,7 @@
       <div class="d-flex flex-wrap gap-quarter">
         <button data-callback="delete">Delete</button>
         <button data-callback="rename">Rename</button>
-        <button data-callback="finalize">Finalize</button>
+        <button data-callback="finalize">Store</button>
         <button data-callback="download">Download</button>
         <button data-callback="preview">Preview</button>
       </div>
@@ -87,7 +100,7 @@
       <div data-slot='title'></div>
       <div class="d-flex flex-wrap gap-quarter">
         <button data-callback="delete">Delete</button>
-        <button data-callback="rename">Rename</button>
+        <!--<button data-callback="rename">Rename</button> -->
         <button data-callback="download">Download</button>
         <button data-callback="preview">Preview</button>
       </div>

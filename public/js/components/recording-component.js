@@ -13,8 +13,8 @@ let compoRecording = (function() {
   let local = {
     customStore: null,
     recordingData: [],
-  }
-  ;
+  };
+  
   function Store(_id) {
     let {id, blob, url, title} = GetDataById(_id);
     let finalRecordEl = $(`#recording-list [data-id="${id}"]`);
