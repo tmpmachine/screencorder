@@ -8,15 +8,17 @@
   
   <link href="css/style.css" rel="stylesheet"/>
   <link href="css/widgets.css" rel="stylesheet"/>
+  <link href="css/skin.css" rel="stylesheet"/>
   <link rel="manifest" href="manifest.json"/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
 
 </head>
 <body>
   
   <!-- # capture options -->
-  [ {p:1rem}
+  [ {p:1rem} .skin-default-button-container
     
-    [ .d-grid {cols:200px 1fr 200px} .gap-full
+    [ .d-grid {cols:300px 1fr 300px} .gap-full
       [
         <!-- # record actions -->
         [ .d-flex .gap-half .flex-wrap
@@ -37,7 +39,7 @@
 
         [h4 'Recordings :' .gg-section-title]
         <!-- # recording list, # list recording -->
-        [ ._listRecording #recording-list data-onclick="handle-click-recording-list" {pt:1rem}]
+        [ ._listRecording #recording-list data-onclick="handle-click-recording-list" .wg-ListSavedRecording]
       ]
       
       [
@@ -82,27 +84,43 @@
   
   <!-- # TEMPLATES -->
   <template id="tmp-list-posts">
-    [ .i-item data-id="" data-kind="itemRecording"
+    [ .i-item data-id="" data-kind="itemRecording" .wg-ListRecording
       <!-- #tmp-list-posts -->
-      [ data-slot='title']
-      [ .d-flex .flex-wrap .gap-quarter
-        [btn 'Delete' data-callback="delete"]
-        [btn 'Rename' data-callback="rename"]
-        [btn 'Store' data-callback="finalize"]
-        [btn 'Download' data-callback="download"]
-        [btn 'Preview' data-callback="preview"]
+      [ .ODEwNjUw
+        [ data-slot='title']
+        [ .d-flex .flex-wrap .gap-quarter
+          [btn 'Delete' data-callback="delete"]
+          [btn 'Rename' data-callback="rename"]
+          [btn 'Store' data-callback="finalize"]
+          [btn 'Preview' data-callback="preview"]
+        ]
+      ]
+      [ .ODEwNjU2
+        [btn data-callback="download"
+          <span class="material-symbols-outlined" data-callback="download">
+          download
+          </span>
+        ]
       ]
     ]
   </template>
   <template id="tmp-item-finalized">
-    [ .i-item data-id="" data-kind="itemRecording"
+    [ .i-item data-id="" data-kind="itemRecording" .wg-ListRecording
       <!-- #tmp-list-posts -->
-      [ data-slot='title']
-      [ .d-flex .flex-wrap .gap-quarter
-        [btn 'Delete' data-callback="delete"]
-        <!--[btn 'Rename' data-callback="rename"] -->
-        [btn 'Download' data-callback="download"]
-        [btn 'Preview' data-callback="preview"]
+      [ .ODEwNjUw
+        [ data-slot='title']
+        [ .d-flex .flex-wrap .gap-quarter
+          [btn 'Delete' data-callback="delete"]
+          <!--[btn 'Rename' data-callback="rename"] -->
+          [btn 'Preview' data-callback="preview"]
+        ]
+      ]
+      [ .ODEwNjU2
+        [btn data-callback="download"
+          <span class="material-symbols-outlined" data-callback="download">
+          download
+          </span>
+        ]
       ]
     ]
   </template>

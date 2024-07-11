@@ -1,0 +1,27 @@
+:root {
+    --bg: #4f4f4f;
+    --col: #e1e1e1;
+    
+    --b: #2c6e54;
+    --c: #7f544f;
+    --d: #96b160;
+}
+
+body {
+    background: var(--bg);
+    color: var(--col);
+}
+
+.skin-default-button-container {
+    button {
+        background: #ffb300;
+        border-radius: 0.2rem;
+        border: 0;
+        padding: 0.3rem 0.8rem;
+        color: black;
+    }
+    button:hover {
+        background: #ffa521;
+        cursor: pointer;
+    }
+}

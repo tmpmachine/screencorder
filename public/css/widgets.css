@@ -5,8 +5,12 @@
 
 .wg-ListSavedRecording {
   ._active {
-    background: lightblue;
+  background: lightblue;
   }
+;
+  gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .gg-PreviewVideo {
@@ -18,4 +22,44 @@
 .wg-Preview {
   background: #222222;
   height: 600px;
+}
+
+
+.wg-ListRecording {
+  & {
+      background: #434343;
+      padding: 1.2rem;
+      border-radius: 1rem;
+      display: flex;
+      gap: 1rem;
+  }
+  button {
+      cursor: pointer;
+  }
+      
+  .ODEwNjU2 {
+      display: flex;
+      align-items: center;
+      /* justify-content: center; */
+  }
+  .ODEwNjU2 button {
+      border-radius: 100%;
+      height: 30px;
+      width: 30px;
+      border: 0;
+      background: #e7e7e7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  }
+  .ODEwNjU2 button:hover {
+    background: #d7d7d7;
+  }
+  
+  .ODEwNzE5 button {
+      font-size: 0.7em;
+  }
+  .ODEwNjUw {
+    flex: 1;
+  }
 }
